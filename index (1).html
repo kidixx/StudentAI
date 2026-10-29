@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>StudyAI</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg1:#f3ecff;--bg2:#dcecff;--ink:#2b2350;--mute:#7a7399;--card:rgba(255,255,255,.72);--line:rgba(124,92,214,.14);--vio:#7c5cd6;--vio2:#5b8def;--pink:#fbd5ec;--lil:#e9defc;--sky:#cfe6ff;--bubble:#fff;--bar:rgba(255,255,255,.85);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg1:#1d1838;--bg2:#12203a;--ink:#f1ecff;--mute:#a69ec9;--card:rgba(255,255,255,.08);--line:rgba(255,255,255,.12);--lil:#34285f;--sky:#1f3558;--pink:#4a2a55;--bubble:rgba(255,255,255,.1);--bar:rgba(30,24,60,.85)}}
+*{box-sizing:border-box;margin:0}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+body{height:100%;font-family:'DM Sans',system-ui,sans-serif;color:var(--ink);background:linear-gradient(160deg,var(--bg1),var(--bg2));display:flex;justify-content:center}
+h1,h2,h3,.sora{font-family:'Sora','DM Sans',sans-serif}
+#app{width:100%;max-width:430px;height:100%;position:relative;overflow:hidden;display:flex;flex-direction:column}
+.screen{display:none;flex:1;overflow-y:auto;padding:20px 18px 100px}
+.screen.on{display:block}
+#chat.on{display:flex;flex-direction:column;padding-bottom:150px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.top h2{font-size:20px}
+.pill{background:var(--card);border:1px solid var(--line);border-radius:99px;padding:7px 14px;font-size:13px;font-weight:500}
+.hello{font-size:26px;line-height:1.2;font-weight:700;margin-bottom:6px}
+.sub{color:var(--mute);font-size:14px;margin-bottom:18px}
+.cont{padding:16px;display:flex;gap:14px;align-items:center;margin-bottom:22px;background:linear-gradient(120deg,var(--vio),var(--vio2));color:#fff;border:0}
+.cont .t{font-size:13px;opacity:.85}.cont b{font-size:16px;display:block;margin:2px 0 8px}
+.bar{height:6px;border-radius:9px;background:rgba(255,255,255,.3);overflow:hidden;width:150px}.bar i{display:block;height:100%;width:62%;background:#fff}
+.ring{margin-left:auto;width:54px;height:54px;border-radius:50%;background:rgba(255,255,255,.22);display:grid;place-items:center;font-weight:700}
+.sec{display:flex;justify-content:space-between;margin:4px 0 12px}.sec h3{font-size:16px}.sec span{font-size:13px;color:var(--vio)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.course{padding:14px;min-height:128px;display:flex;flex-direction:column;justify-content:space-between;border:0}
+.course small{font-size:12px;color:var(--mute)}.course b{font-size:15px;line-height:1.25}
+.c1{background:var(--lil)}.c2{background:var(--sky)}.c3{background:var(--pink)}.c4{background:linear-gradient(135deg,var(--lil),var(--sky))}
+.orbwrap{display:grid;place-items:center;height:150px;margin:0 0 6px}
+.orb{width:120px;height:120px;border-radius:46% 54% 50% 50%/52% 46% 54% 48%;background:radial-gradient(circle at 30% 28%,#fff 0,rgba(255,255,255,0) 30%),conic-gradient(from 200deg,#7c5cd6,#5b8def,#9ed8ff,#fbd5ec,#c9a8ff,#7c5cd6);box-shadow:inset -10px -14px 30px rgba(43,35,80,.25),0 18px 40px rgba(124,92,214,.35);animation:morph 9s ease-in-out infinite}
+@keyframes morph{50%{border-radius:54% 46% 44% 56%/46% 56% 44% 54%;transform:translateY(-6px) rotate(8deg)}}
+@media (prefers-reduced-motion:reduce){.orb{animation:none}}
+.greet{text-align:center;font-size:22px;font-weight:700;line-height:1.25;margin-bottom:14px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:12px;margin-bottom:6px}
+.chip{flex:none;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px;font:500 13px 'DM Sans',sans-serif;color:var(--ink);cursor:pointer}
+.msgs{display:flex;flex-direction:column;gap:10px}
+.m{max-width:82%;padding:11px 14px;border-radius:18px;font-size:14px;line-height:1.45}
+.m.u{align-self:flex-end;background:linear-gradient(120deg,var(--vio),var(--vio2));color:#fff;border-bottom-right-radius:6px}
+.m.a{align-self:flex-start;background:var(--bubble);border:1px solid var(--line);border-bottom-left-radius:6px}
+.inbar{position:absolute;left:14px;right:14px;bottom:calc(78px + env(safe-area-inset-bottom,0px));display:none;gap:8px;padding:8px 8px 8px 16px;align-items:center}
+.inbar.on{display:flex}
+.inbar input{flex:1;border:0;background:none;font:400 15px 'DM Sans',sans-serif;color:var(--ink);outline:none;min-width:0}
+.send{width:42px;height:42px;border-radius:50%;border:0;background:linear-gradient(135deg,var(--vio),var(--vio2));color:#fff;font-size:18px;cursor:pointer}
+.seg{display:flex;padding:4px;margin-bottom:14px;border-radius:16px}
+.seg button{flex:1;border:0;background:none;padding:10px;border-radius:12px;font:500 14px 'DM Sans',sans-serif;color:var(--mute);cursor:pointer}
+.seg button.on{background:var(--vio);color:#fff}
+.search{width:100%;padding:13px 16px;border-radius:16px;border:1px solid var(--line);background:var(--card);font:400 15px 'DM Sans',sans-serif;color:var(--ink);margin-bottom:14px;outline:none}
+.item{display:flex;gap:12px;align-items:center;padding:12px;margin-bottom:10px}
+.ic{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:20px;background:var(--lil);flex:none}
+.item b{font-size:14px;display:block}.item small{color:var(--mute);font-size:12px}
+.podium{display:flex;justify-content:center;align-items:flex-end;gap:14px;padding:22px 10px 16px;margin-bottom:14px}
+.pd{text-align:center;font-size:12px;color:var(--mute)}.pd b{display:block;color:var(--ink);font-size:13px}
+.av{width:54px;height:54px;border-radius:50%;margin:0 auto 6px;display:grid;place-items:center;font:700 18px 'Sora',sans-serif;color:#fff;background:linear-gradient(135deg,var(--vio),#e58bc6)}
+.pd.first .av{width:70px;height:70px;font-size:24px;box-shadow:0 0 0 4px var(--pink)}
+.row{display:flex;align-items:center;gap:12px;padding:12px 14px;margin-bottom:8px}
+.row .n{width:20px;color:var(--mute);font-size:13px}.row .av{width:36px;height:36px;font-size:14px;margin:0}.row b{flex:1;font-size:14px}.row span{font-weight:700;color:var(--vio)}
+nav{position:absolute;left:14px;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));display:flex;padding:8px;background:var(--bar);border:1px solid var(--line);border-radius:26px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+nav button{flex:1;border:0;background:none;padding:8px 0;border-radius:18px;font:500 11px 'DM Sans',sans-serif;color:var(--mute);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+nav button span{font-size:19px}nav button.on{color:var(--vio);background:var(--lil)}
+#welcome{position:absolute;inset:0;z-index:5;background:linear-gradient(170deg,var(--bg1),var(--bg2));display:flex;flex-direction:column;justify-content:flex-end;padding:28px 24px calc(34px + env(safe-area-inset-bottom,0px))}
+#welcome.off{display:none}
+#welcome .orbwrap{flex:1;height:auto}#welcome .orb{width:190px;height:190px}
+#welcome h1{font-size:30px;line-height:1.15;margin-bottom:10px}
+#welcome p{color:var(--mute);margin-bottom:22px;font-size:15px}
+.cta{width:100%;padding:15px;border:0;border-radius:18px;background:linear-gradient(120deg,var(--vio),var(--vio2));color:#fff;font:700 16px 'Sora',sans-serif;cursor:pointer}
+:focus-visible{outline:3px solid var(--vio2);outline-offset:2px}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="welcome">
+    <div class="orbwrap"><div class="orb"></div></div>
+    <h1>Study smarter with your own AI tutor</h1>
+    <p>Get notes from your department, search the e-library, and ask questions in one place.</p>
+    <button class="cta" onclick="document.getElementById('welcome').classList.add('off')">Get started</button>
+  </div>
+
+  <section class="screen on" id="home">
+    <div class="top"><span class="pill">River State University</span><span class="pill">🔥 5-day streak</span></div>
+    <h1 class="hello">Good day, Imo.<br>What are we studying?</h1>
+    <p class="sub">Pick up where you stopped or ask the AI.</p>
+    <div class="card cont">
+      <div><div class="t">Continue learning</div><b>Computer Networks</b><div class="bar"><i></i></div></div>
+      <div class="ring">62%</div>
+    </div>
+    <div class="sec"><h3>Department notes</h3><span onclick="go('lib')">See all</span></div>
+    <div class="grid">
+      <div class="card course c1"><span style="font-size:24px">🌐</span><div><b>Computer Networks</b><br><small>Computer Science · 12 notes</small></div></div>
+      <div class="card course c2"><span style="font-size:24px">🐍</span><div><b>Python Programming</b><br><small>Computer Science · 9 notes</small></div></div>
+      <div class="card course c3"><span style="font-size:24px">⚙️</span><div><b>Engineering Maths</b><br><small>Mathematics · 15 notes</small></div></div>
+      <div class="card course c4"><span style="font-size:24px">🧪</span><div><b>General Chemistry</b><br><small>Chemistry · 7 notes</small></div></div>
+    </div>
+  </section>
+
+  <section class="screen" id="chat">
+    <div class="orbwrap" id="orbtop"><div class="orb"></div></div>
+    <div class="greet" id="greet">Greetings, student!<br>What should we study today?</div>
+    <div class="chips" id="chips">
+      <button class="chip" onclick="ask('Quiz me on computer networks')">Quiz me</button>
+      <button class="chip" onclick="ask('Summarize my latest notes')">Summarize notes</button>
+      <button class="chip" onclick="ask('Make flashcards for Python')">Make flashcards</button>
+      <button class="chip" onclick="ask('Explain subnetting simply')">Explain a topic</button>
+    </div>
+    <div class="msgs" id="msgs"></div>
+  </section>
+
+  <section class="screen" id="lib">
+    <div class="top"><h2>Library</h2></div>
+    <div class="card seg"><button class="on" id="t1" onclick="tab(1)">Department notes</button><button id="t2" onclick="tab(2)">E-library</button></div>
+    <input class="search" id="q" placeholder="Search notes or books" oninput="render()" aria-label="Search">
+    <div id="list"></div>
+  </section>
+
+  <section class="screen" id="rank">
+    <div class="top"><h2>Weekly ranks</h2><span class="pill">Class rank: 1</span></div>
+    <div class="card podium">
+      <div class="pd"><div class="av">B</div><b>Bennett</b>860</div>
+      <div class="pd first"><div class="av">Y</div><b>You</b>920</div>
+      <div class="pd"><div class="av">O</div><b>Oliver</b>740</div>
+    </div>
+    <div id="rows"></div>
+  </section>
+
+  <div class="card inbar" id="inbar">
+    <input id="inp" placeholder="Message your study assistant" aria-label="Message" onkeydown="if(event.key==='Enter')ask()">
+    <button class="send" onclick="ask()" aria-label="Send">➤</button>
+  </div>
+
+  <nav>
+    <button class="on" data-s="home" onclick="go('home')"><span>🏠</span>Home</button>
+    <button data-s="chat" onclick="go('chat')"><span>✨</span>Ask AI</button>
+    <button data-s="lib" onclick="go('lib')"><span>📚</span>Library</button>
+    <button data-s="rank" onclick="go('rank')"><span>🏆</span>Ranks</button>
+  </nav>
+</div>
+<script>
+function go(id){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.toggle('on',s.id===id)});
+  document.querySelectorAll('nav button').forEach(function(b){b.classList.toggle('on',b.dataset.s===id)});
+  document.getElementById('inbar').classList.toggle('on',id==='chat');
+}
+var notes=[['📄','Intro to Subnetting','Computer Science · PDF'],['📄','OSI Model Summary','Computer Science · Slides'],['📄','Python Functions','Computer Science · PDF'],['📄','Differential Equations','Mathematics · PDF'],['📄','Organic Chemistry Basics','Chemistry · PDF']];
+var books=[['📘','Computer Networking: A Top-Down Approach','E-library · Book'],['📗','Automate the Boring Stuff with Python','E-library · Book'],['📙','Engineering Mathematics','E-library · Book'],['📕','Chemistry: The Central Science','E-library · Book']];
+var cur=1;
+function tab(n){cur=n;document.getElementById('t1').classList.toggle('on',n===1);document.getElementById('t2').classList.toggle('on',n===2);render()}
+function render(){
+  var q=document.getElementById('q').value.toLowerCase(),d=cur===1?notes:books,h='';
+  d.filter(function(x){return x[1].toLowerCase().indexOf(q)>-1}).forEach(function(x){
+    h+='<div class="card item"><div class="ic">'+x[0]+'</div><div><b>'+x[1]+'</b><small>'+x[2]+'</small></div></div>';
+  });
+  document.getElementById('list').innerHTML=h||'<p class="sub">No results. Try a different word.</p>';
+}
+var people=[['Jeni Sompwui',720],['James Carter',643],['Lara Chen',534],['Mohammed Ali',521],['Sophie Turner',478]];
+document.getElementById('rows').innerHTML=people.map(function(p,i){
+  return '<div class="card row"><div class="n">'+(i+4)+'</div><div class="av">'+p[0][0]+'</div><b>'+p[0]+'</b><span>'+p[1]+'</span></div>';
+}).join('');
+function ask(t){
+  var inp=document.getElementById('inp');t=t||inp.value.trim();if(!t)return;inp.value='';
+  document.getElementById('orbtop').style.display='none';
+  document.getElementById('greet').style.display='none';
+  document.getElementById('chips').style.display='none';
+  var m=document.getElementById('msgs');
+  m.insertAdjacentHTML('beforeend','<div class="m u"></div>');m.lastChild.textContent=t;
+  setTimeout(function(){
+    m.insertAdjacentHTML('beforeend','<div class="m a">This is a demo reply. Once the AI is connected, I will answer using your department notes and the e-library.</div>');
+    document.getElementById('chat').scrollTop=99999;
+  },600);
+  document.getElementById('chat').scrollTop=99999;
+}
+render();
+</script>
+</body>
+</html>
